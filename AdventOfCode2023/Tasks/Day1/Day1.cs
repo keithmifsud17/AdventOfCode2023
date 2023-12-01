@@ -1,20 +1,18 @@
-﻿using CommandLine;
+﻿using Spectre.Console;
+using Spectre.Console.Cli;
 using System.Text;
 
 namespace AdventOfCode2023.Tasks.Day1
 {
-    [Verb("day1", aliases: new[] { "trebuchet" }, HelpText = "--- Day 1: Trebuchet?! ---")]
-    internal class Day1 : ICommand
+    internal class Day1 : AsyncCommand<Day1Settings>
     {
-
-        [Option('f', "file", Required = true, HelpText = "Input file to be processed.")]
-        public required string InputFile { get; set; }
-
-        public async ValueTask ExecuteAsync()
+        public override async Task<int> ExecuteAsync(CommandContext context, Day1Settings settings)
         {
-            var lines = await File.ReadAllLinesAsync(InputFile);
+            var lines = await File.ReadAllLinesAsync(settings.InputFile);
 
-            Console.WriteLine(lines.Sum(CalibrateLine));
+            AnsiConsole.WriteLine(lines.Sum(CalibrateLine));
+
+            return 0;
         }
 
         private int CalibrateLine(string line)

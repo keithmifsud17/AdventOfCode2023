@@ -1,18 +1,14 @@
-﻿using AdventOfCode2023;
-using CommandLine;
-using System.Reflection;
+﻿using AdventOfCode2023.Tasks.Day1;
+using Spectre.Console.Cli;
 
-var types = LoadVerbs();
-await Parser.Default.ParseArguments(args, types)
-    .WithNotParsed((_) => { })
-    .WithParsedAsync(async o =>
+var app = new CommandApp();
+app.Configure(config =>
+{
+    config.AddBranch("day1", day1 =>
     {
-        if (o is ICommand c)
-        {
-            await c.ExecuteAsync();
-        }
+        day1.AddCommand<Day1>("part1").WithDescription("--- Day 1: Trebuchet?! Part One ---");
+        day1.AddCommand<Day1B>("part2").WithDescription("--- Day 1: Trebuchet?! Part Two ---");
     });
+});
 
-static Type[] LoadVerbs() => Assembly.GetExecutingAssembly().GetTypes()
-    .Where(t => t.GetCustomAttribute<VerbAttribute>() != null)
-    .ToArray();
+return await app.RunAsync(args);

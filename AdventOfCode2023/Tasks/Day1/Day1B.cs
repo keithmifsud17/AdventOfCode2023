@@ -1,10 +1,10 @@
-﻿using CommandLine;
+﻿using Spectre.Console;
+using Spectre.Console.Cli;
 using System.Text;
 
 namespace AdventOfCode2023.Tasks.Day1
 {
-    [Verb("day1B", aliases: new[] { "trebuchetB", "trebuchet_part_2" }, HelpText = "--- Day 1: Trebuchet?! Part Two ---")]
-    internal class Day1B : ICommand
+    internal class Day1B : AsyncCommand<Day1Settings>
     {
         private static readonly string[] _digits =
         [
@@ -18,16 +18,6 @@ namespace AdventOfCode2023.Tasks.Day1
             "eight",
             "nine",
         ];
-
-        [Option('f', "file", Required = true, HelpText = "Input file to be processed.")]
-        public required string InputFile { get; set; }
-
-        public async ValueTask ExecuteAsync()
-        {
-            var lines = await File.ReadAllLinesAsync(InputFile);
-
-            Console.WriteLine(lines.Sum(CalibrateLine));
-        }
 
         private int CalibrateLine(string line)
         {
@@ -53,7 +43,7 @@ namespace AdventOfCode2023.Tasks.Day1
                 }
             }
 
-            Console.WriteLine($"{line}, {newLine}, {builder}");
+            AnsiConsole.WriteLine($"{line}, {newLine}, {builder}");
 
             return int.Parse(builder.ToString());
         }
@@ -88,6 +78,15 @@ namespace AdventOfCode2023.Tasks.Day1
             }
 
             return line;
+        }
+
+        public override async Task<int> ExecuteAsync(CommandContext context, Day1Settings settings)
+        {
+            var lines = await File.ReadAllLinesAsync(settings.InputFile);
+
+            AnsiConsole.WriteLine(lines.Sum(CalibrateLine));
+
+            return 0;
         }
     }
 }
