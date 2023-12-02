@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AdventOfCode2023.Tasks.Day1
 {
-    internal class Day1B : AsyncCommand<Day1Settings>
+    internal class Day1B : AsyncCommand<FileInputSettings>
     {
         private static readonly string[] _digits =
         [
@@ -18,6 +18,15 @@ namespace AdventOfCode2023.Tasks.Day1
             "eight",
             "nine",
         ];
+
+        public override async Task<int> ExecuteAsync(CommandContext context, FileInputSettings settings)
+        {
+            var lines = await File.ReadAllLinesAsync(settings.InputFile);
+
+            AnsiConsole.WriteLine(lines.Sum(CalibrateLine));
+
+            return 0;
+        }
 
         private int CalibrateLine(string line)
         {
@@ -78,15 +87,6 @@ namespace AdventOfCode2023.Tasks.Day1
             }
 
             return line;
-        }
-
-        public override async Task<int> ExecuteAsync(CommandContext context, Day1Settings settings)
-        {
-            var lines = await File.ReadAllLinesAsync(settings.InputFile);
-
-            AnsiConsole.WriteLine(lines.Sum(CalibrateLine));
-
-            return 0;
         }
     }
 }

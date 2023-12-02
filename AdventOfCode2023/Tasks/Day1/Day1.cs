@@ -4,9 +4,9 @@ using System.Text;
 
 namespace AdventOfCode2023.Tasks.Day1
 {
-    internal class Day1 : AsyncCommand<Day1Settings>
+    internal class Day1 : AsyncCommand<FileInputSettings>
     {
-        public override async Task<int> ExecuteAsync(CommandContext context, Day1Settings settings)
+        public override async Task<int> ExecuteAsync(CommandContext context, FileInputSettings settings)
         {
             var lines = await File.ReadAllLinesAsync(settings.InputFile);
 
