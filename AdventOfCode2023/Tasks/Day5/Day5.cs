@@ -11,7 +11,7 @@ namespace AdventOfCode2023.Tasks.Day5
 
             var seeds = lines[0].Split(' ').Skip(1).Select(long.Parse);
 
-            var maps = new Dictionary<(string Source, string Destination), Dictionary<long, long>>();
+            var maps = new Dictionary<(string Source, string Destination), List<Func<long, long>>>();
             string currentSource = "";
             string currentDestination = "";
             for (int i = 2; i < lines.Length; i++)
@@ -29,11 +29,17 @@ namespace AdventOfCode2023.Tasks.Day5
                     var map = lines[i].Split(' ').Select(long.Parse);
                     long source = map.ElementAt(1);
                     long destination = map.ElementAt(0);
+                    long counter = map.ElementAt(2);
 
-                    for (int j = 0; j < map.ElementAt(2); j++)
+                    maps[(currentSource, currentDestination)].Add(x =>
                     {
-                        maps[(currentSource, currentDestination)][source++] = destination++;
-                    }
+                        if (x >= source && x <= source + counter)
+                        {
+                            return x + (destination - source);
+                        }
+
+                        return long.MinValue;
+                    });
                 }
             }
 
@@ -44,17 +50,19 @@ namespace AdventOfCode2023.Tasks.Day5
             return 0;
         }
 
-        private static long Map(Dictionary<(string Source, string Destination), Dictionary<long, long>> maps, string source, string destination, long sourceId)
+        private static long Map(Dictionary<(string Source, string Destination), List<Func<long, long>>> maps, string source, string destination, long sourceId)
         {
             if (maps.ContainsKey((source, destination)))
             {
                 var map = maps[(source, destination)];
-                return map.TryGetValue(sourceId, out long value) ? value : sourceId;
+                var value = map.Select(x => x(sourceId)).Max();
+                return value > long.MinValue ? value : sourceId;
             }
             else
             {
                 var map = maps.Single(x => x.Key.Source == source);
-                return Map(maps, map.Key.Destination, destination, map.Value.TryGetValue(sourceId, out long value) ? value : sourceId);
+                var value = map.Value.Select(x => x(sourceId)).Max();
+                return Map(maps, map.Key.Destination, destination, value > long.MinValue ? value : sourceId);
             }
         }
     }
