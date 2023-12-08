@@ -9,15 +9,40 @@ namespace AdventOfCode2023.Tasks.Day5
         {
             var lines = await File.ReadAllLinesAsync(settings.InputFile);
 
-            var seeds = lines[0].Split(' ').Skip(1).Select(long.Parse);
+            var seeds = ParseSeeds(lines[0].Split(' ').Skip(1).Select(long.Parse).ToArray())
+                .OrderBy(x => x.Start)
+                .ToList();
 
             var maps = Day5Parser.ParseSourceMap(lines);
 
-            var min = seeds.Select(seed => maps.Map("seed", "location", seed)).Min();
+            IEnumerable<long> MapRange(SeedRange seed)
+            {
+                for (long i = seed.Start; i <= seed.End; i++)
+                {
+                    yield return maps.Map("seed", "location", i);
+                }
+            };
+
+            var min = seeds
+                .SelectMany(MapRange)                
+                .Min();
 
             AnsiConsole.WriteLine("Lowest location: {0}", min);
 
             return 0;
+        }
+
+        private static IEnumerable<SeedRange> ParseSeeds(long[] list)
+        {
+            for (int i = 0; i < list.Length; i += 2)
+            {
+                yield return new SeedRange(list[i], list[i + 1]);
+            }
+        }
+
+        internal record SeedRange(long Start, long Counter) 
+        {
+            public long End => Start + Counter - 1;
         }
     }
 }
