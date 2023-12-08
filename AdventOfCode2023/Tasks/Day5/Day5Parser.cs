@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode2023.Tasks.Day5
+﻿using static AdventOfCode2023.Tasks.Day5.Day5B;
+
+namespace AdventOfCode2023.Tasks.Day5
 {
     internal static class Day5Parser
     {
@@ -27,6 +29,14 @@
             }
 
             return maps;
+        }
+
+        public static IEnumerable<SeedRange> ParseSeeds(long[] list)
+        {
+            for (int i = 0; i < list.Length; i += 2)
+            {
+                yield return new SeedRange(list[i], list[i + 1]);
+            }
         }
     }
 }
