@@ -5,6 +5,7 @@ using AdventOfCode2023.Tasks.Day3;
 using AdventOfCode2023.Tasks.Day4;
 using AdventOfCode2023.Tasks.Day5;
 using AdventOfCode2023.Tasks.Day6;
+using AdventOfCode2023.Tasks.Day7;
 using Spectre.Console.Cli;
 
 var app = new CommandApp();
@@ -44,6 +45,12 @@ app.Configure(config =>
     {
         day.AddCommand<Day6>("part1").WithDescription("--- Day 6: Wait For It Part One ---");
         day.AddCommand<Day6B>("part2").WithDescription("--- Day 6: Wait For It Part Two ---");
+    });
+
+    config.AddBranch<FileInputSettings>("day7", day =>
+    {
+        day.AddCommand<Day7>("part1").WithDescription("--- Day 7: Camel Cards Part One ---");
+        day.AddCommand<Day7B>("part2").WithDescription("--- Day 7: Camel Cards Part Two ---");
     });
 });
 
