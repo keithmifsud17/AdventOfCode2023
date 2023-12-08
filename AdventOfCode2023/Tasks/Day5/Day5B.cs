@@ -15,11 +15,9 @@ namespace AdventOfCode2023.Tasks.Day5
 
             var maps = Day5Parser.ParseSourceMap(lines);
 
-            var x = maps.Map("seed", "location", new LongRange(81, 83)).ToArray();
-
             var ranges = seeds
                 .SelectMany(seedRange => maps.Map("seed", "location", new LongRange(seedRange.Start, seedRange.End)));
-                
+
             var min = ranges
                 .MinBy(x => x.Start)
                 !.Start;
