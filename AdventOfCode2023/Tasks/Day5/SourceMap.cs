@@ -29,17 +29,15 @@ namespace AdventOfCode2023.Tasks.Day5
 
             map = maps.Single(x => x.Source == source);
 
-            var destinationRange = map.Map(sourceRange).ToArray();
-
-            return destinationRange.SelectMany(r => Map(map.Destination, destination, r).ToArray());
+            return map.Map(sourceRange).SelectMany(r => Map(map.Destination, destination, r));
         }
     }
 
     internal record SourceMap(string Source, string Destination)
     {
-        private List<Map> maps = [];
+        private IEnumerable<Map> maps = [];
 
-        public void AddMap(Map map) => maps = maps.Append(map).OrderBy(x => x.SourceStart).ToList();
+        public void AddMap(Map map) => maps = maps.Append(map).OrderBy(x => x.SourceStart);
 
         public long Map(long sourceId)
         {
