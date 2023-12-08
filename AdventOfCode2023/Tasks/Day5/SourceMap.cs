@@ -54,13 +54,10 @@ namespace AdventOfCode2023.Tasks.Day5
 
         internal IEnumerable<LongRange> Map(LongRange sourceRange)
         {
-            foreach (var map in maps)
-            {
-                if (map.TryGetDestination(sourceRange, out var destinationId))
-                    return destinationId;
-            }
-
-            return [sourceRange];
+            return maps
+                .Select(map => map.MapDestinations(sourceRange))
+                .Where(x => x != null)
+                .DefaultIfEmpty(sourceRange);
         }
     }
     internal record Map(long SourceStart, long DestinationStart, long Counter)
@@ -80,43 +77,26 @@ namespace AdventOfCode2023.Tasks.Day5
             return false;
         }
 
-        public bool TryGetDestination(LongRange sourceRange, [NotNullWhen(true)] out IEnumerable<LongRange>? destinationRanges)
+        public LongRange? MapDestinations(LongRange sourceRange)
         {
             if (MapSourceRange.Start <= sourceRange.Start && MapSourceRange.End >= sourceRange.End)
             {
-                destinationRanges = [
-                    new(MapDestination(sourceRange.Start), MapDestination(sourceRange.End))
-                ];
-                return true;
+                return new(MapDestination(sourceRange.Start), MapDestination(sourceRange.End));
             }
             else if (MapSourceRange.Start > sourceRange.Start && MapSourceRange.End < sourceRange.End)
             {
-                destinationRanges = [
-                    new(sourceRange.Start, MapSourceRange.Start - 1),
-                    MapDestinationRange,
-                    new(MapSourceRange.End + 1, sourceRange.End)
-                ];
-                return true;
+                return MapDestinationRange;
             }
             else if (MapSourceRange.Start > sourceRange.Start && MapSourceRange.End >= sourceRange.End && MapSourceRange.Start <= sourceRange.End)
             {
-                destinationRanges = [
-                    new(sourceRange.Start, MapSourceRange.Start - 1),
-                    new(MapDestination(sourceRange.Start), MapDestination(sourceRange.End))
-                ];
-                return true;
+                return new(MapDestination(sourceRange.Start), MapDestination(sourceRange.End));
             }
             else if (MapSourceRange.Start <= sourceRange.Start && MapSourceRange.End < sourceRange.End && MapSourceRange.End >= sourceRange.Start)
             {
-                destinationRanges = [
-                    new(MapDestination(sourceRange.Start), MapDestination(MapSourceRange.End)),
-                    new(MapSourceRange.End + 1, sourceRange.End)
-                ];
-                return true;
+                return new(MapDestination(sourceRange.Start), MapDestination(MapSourceRange.End));
             }
 
-            destinationRanges = null;
-            return false;
+            return null;
         }
 
         private long MapDestination(long sourceId) => sourceId + (DestinationStart - SourceStart);
