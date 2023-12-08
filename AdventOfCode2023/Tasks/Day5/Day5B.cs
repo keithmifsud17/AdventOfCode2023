@@ -9,7 +9,13 @@ namespace AdventOfCode2023.Tasks.Day5
         {
             var lines = await File.ReadAllLinesAsync(settings.InputFile);
 
-            AnsiConsole.WriteLine("");
+            var seeds = lines[0].Split(' ').Skip(1).Select(long.Parse);
+
+            var maps = Day5Parser.ParseSourceMap(lines);
+
+            var min = seeds.Select(seed => maps.Map("seed", "location", seed)).Min();
+
+            AnsiConsole.WriteLine("Lowest location: {0}", min);
 
             return 0;
         }
