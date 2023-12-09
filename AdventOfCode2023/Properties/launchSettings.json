@@ -2,7 +2,7 @@
   "profiles": {
     "AdventOfCode2023": {
       "commandName": "Project",
-      "commandLineArgs": "day8 tasks/day8/input.txt part2"
+      "commandLineArgs": "day9 tasks/day9/input.txt part2"
     }
   }
 }
